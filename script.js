@@ -94,7 +94,7 @@ function instantMapLocation(map) {
 
     if (storedLatitude != null && storedLongitude != null) {
         map.setView([storedLatitude, storedLongitude], 12);
-        document.getElementById("instantLocation").innerHTML = "Latitude : " + storedLatitude + " / Longitude : " + storedLongitude;
+        document.getElementById("instantLocation").innerHTML = "Latitude : " + storedLatitude + " <br> Longitude : " + storedLongitude;
     }; 
 
     console.log(localStorage);
