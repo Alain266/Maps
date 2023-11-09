@@ -29,8 +29,8 @@ init();
 
 /**
  * Affichage de la carte et coordonées de l'utilisateur
+ * @param {map}
  */
-
 function openMap(map) { 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -40,6 +40,8 @@ function openMap(map) {
 
 /**
  * Pour chaque station si elle est sur la ligne A elle est rouge sinon elle est jaune
+ * @param {map}
+ * @param {stations}
  */
 function stationsCircles(map, stations) { stations.forEach(element => {
         if (element.ligne == "A") {
@@ -62,6 +64,7 @@ function stationsCircles(map, stations) { stations.forEach(element => {
 
 /**
  * Ecoute quand l'utilisateur appuie sur le bouton geolocaliser
+ * @param {map}
  */
 function newLocation (map) {
     document.getElementById('localisation_form').addEventListener("submit", (event) => {
@@ -78,21 +81,29 @@ function newLocation (map) {
 
 /**
  * Affiche la localisation actuelle de la carte 
+ * @param {map}
  */
 function instantMapLocation(map) {
     document.getElementById("instantLocation").innerHTML = "Latitude : " + map.getCenter().lat + " / Longitude : " + map.getCenter().lng;
+
     localStorage.setItem("latitude", map.getCenter().lat); // Enregistrement des coordonnes dans le localStorage
     localStorage.setItem("longitude", map.getCenter().lng); // Enregistrement des coordonnes dans le localStorage
-    if (localStorage.getItem("latitude") != null && localStorage.getItem("longitude") != null) {
-        map.setView([localStorage.getItem("latitude"), localStorage.getItem("longitude")], 12);
+
+    var storedLatitude = localStorage.getItem("latitude");
+    var storedLongitude = localStorage.getItem("longitude");
+
+    if (storedLatitude != null && storedLongitude != null) {
+        map.setView([storedLatitude, storedLongitude], 12);
+        document.getElementById("instantLocation").innerHTML = "Latitude : " + storedLatitude + " / Longitude : " + storedLongitude;
     }; 
+
     console.log(localStorage);
 };
 
 /**
  * Affiche la localisation actuelle de l'utilisateur (geolocalisation)
+ * @param {map}
  */
-
 function instantLocation(map) {
     document.getElementById("geolocalisationIcon").addEventListener("click", () => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -106,10 +117,11 @@ function instantLocation(map) {
 
         openMap(map); 
 
-        var marker = L.marker([userLatitude, userLongitude]).addTo(map).bindPopup("<b>Vous êtes ici !</b><br>Emplacement actuel").openPopup(); // Affichage d'un popup
-        })
-    })
+        let marker = L.marker([userLatitude, userLongitude]).addTo(map).bindPopup("<b>Vous êtes ici !</b><br>Emplacement actuel").openPopup(); // Affichage d'un popup
+        });
+    });
 };
+
 
 
 
