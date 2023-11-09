@@ -1,0 +1,78 @@
+*{
+    font-family: 'Parisienne', cursive;
+    font-family: 'Rubik', sans-serif;
+}
+
+html{
+    background-image: url("https://images.pexels.com/photos/16986836/pexels-photo-16986836/free-photo-of-el-guardian-misti.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+}
+
+.center {
+    text-align: center;
+}
+
+h1 {
+    color: #ffffff;
+}
+
+#map { 
+    width: 600px;
+    height: 600px; 
+    margin: 0 auto;
+    border-radius: 25px;
+}
+
+#coordinate {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+#geolocalisationIcon {
+    margin: auto;
+    width: 25px;
+    height: 25px;
+}
+
+#geolocalisationIcon:hover {
+    cursor: pointer;
+    transform: scale(1.5);
+}
+
+.leaflet-container {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#formDiv {
+    max-width: 500px;
+    margin: 25px auto;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+#localisation_form {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+#localisation_form input{
+    margin: auto;
+    border-radius: 25px;
+    width: 50%;
+}
+
+#localisation_form button{
+    margin: auto;
+    border-radius: 25px;
+    width: 20%;
+}
