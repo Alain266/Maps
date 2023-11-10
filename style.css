@@ -106,6 +106,7 @@ h1 {
     margin: auto;
     border-radius: 25px;
     width: 20%;
+    min-width: max-content;
 }
 
 footer {
