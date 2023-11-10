@@ -3,7 +3,25 @@
  */
 function init() {
 
-    let map = L.map('map').setView([43.58399990182485, 1.4025073405795074], 12); // Centre de la carte au démarrage
+    let storedLatitude = localStorage.getItem("latitude"); // Recherche des coordonnes dans le localStorage
+    let storedLongitude = localStorage.getItem("longitude"); // Recherche des coordonnes dans le localStorage
+    let apformLat = 43.584038759746704; // Latitude ApFormation
+    let apformLong = 1.4026039000992538; // Longitude ApFormation
+
+
+    /**
+     * Si les coordonnes existent dans le localStorage alors on les reprends
+     */
+    if (storedLatitude != null && storedLongitude != null) {
+        initLatitude = storedLatitude;
+        initLongitude = storedLongitude
+    } else {
+        initLatitude = apFormLat;
+        initLongitude = apFormLong;
+    }
+
+
+    let map = L.map('map').setView([initLatitude, initLongitude], 12); // Centre de la carte au démarrage
 
     const stations = [ // Coordonnées des stations
         {titre: 'Capitole', latitude: 43.604204437324434, longitude: 1.44501792923168, ligne: "A"},
@@ -23,6 +41,7 @@ function init() {
     newLocation(map);
     instantMapLocation(map);
     instantLocation(map);
+    centerMapOnClick(map);
 };
 
 init();
@@ -36,6 +55,7 @@ function openMap(map) {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
 }
 
 /**
@@ -44,21 +64,30 @@ function openMap(map) {
  * @param {stations}
  */
 function stationsCircles(map, stations) { stations.forEach(element => {
-        if (element.ligne == "A") {
-            var circle = L.circle([element.latitude, element.longitude], {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 100
-            }).addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.ligne}.`);
-        } else {
-            var circle = L.circle([element.latitude, element.longitude], {
-                color: 'yellow',
-                fillColor: '#fff800',
-                fillOpacity: 0.5,
-                radius: 100
-            }).addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.ligne}.`);
-        }
+
+    
+    let icon_sizes = [40, 40]
+
+    let iconA = L.icon({
+        iconUrl: 'broche-de-localisation(rouge).png',
+        iconSize: icon_sizes
+    })
+
+    let iconB = L.icon({
+        iconUrl: 'broche-de-localisation(jaune).png',
+        iconSize: icon_sizes
+    })
+
+    if (element.ligne == "A") {
+        var marker = L.marker([element.latitude, element.longitude], {icon: iconA}).addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.ligne}.`);
+    } else {
+        var marker = L.marker([element.latitude, element.longitude], {icon: iconB}).addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.ligne}.`);
+    };
+    
+        openMap(map);
+
+            // marker.addEventListener("click", () => {
+            // map.setView([marker.getLatLng().lat, marker.getLatLng().lng], 12);
     });
 };
 
@@ -115,6 +144,9 @@ function instantLocation(map) {
 
             document.getElementById("instantLocation").innerHTML = "Latitude : " + userLatitude + " / Longitude : " + userLongitude;
 
+            localStorage.setItem("latitude", map.getCenter().lat); // Enregistrement des coordonnes dans le localStorage
+    localStorage.setItem("longitude", map.getCenter().lng); // Enregistrement des coordonnes dans le localStorage
+
         openMap(map); 
 
         let marker = L.marker([userLatitude, userLongitude]).addTo(map).bindPopup("<b>Vous êtes ici !</b><br>Emplacement actuel").openPopup(); // Affichage d'un popup
@@ -123,6 +155,17 @@ function instantLocation(map) {
 };
 
 
+/**
+ * Ecoute quand l'utilisateur appuie sur un marker de la carte puis centre la carte sur ce point
+ * @param {map}
+ */
+
+function centerMapOnClick(map) {
+    circle.addEventListener("click", () => {
+        map.setView([circle.getLatLng().lat, circle.getLatLng().lng], 12);
+        openMap(map);
+    })
+}
 
 
 
