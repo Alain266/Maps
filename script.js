@@ -23,26 +23,40 @@ function init() {
 
     let map = L.map('map').setView([initLatitude, initLongitude], 12); // Centre de la carte au démarrage
 
+    let icon_sizes = [40, 40];
+
+    let iconA = L.icon({
+        iconUrl: 'broche-de-localisation(rouge).png',
+        iconSize: icon_sizes,
+        iconAnchor:[19,41],
+    })
+
+    let iconB = L.icon({
+        iconUrl: 'broche-de-localisation(jaune).png',
+        iconSize: icon_sizes,
+        iconAnchor:[19,41],
+    })
+
     const stations = [ // Coordonnées des stations
-        {titre: 'Capitole', latitude: 43.604204437324434, longitude: 1.44501792923168, ligne: "A"},
-        {titre: 'Balma Gramont', latitude: 43.62973291200079, longitude: 1.4830699623765822,ligne: "A"},
-        {titre: 'Basso Combo', latitude: 43.569995010779195, longitude: 1.392272007908091, ligne: "A"},
-        {titre: 'Esquirol', latitude: 43.600302077765214, longitude: 1.4441961788911348, ligne: "A"},
-        {titre: 'Arenes', latitude: 43.59342060900095, longitude: 1.4185816325359704, ligne: "A"},
-        {titre: 'Jean Jaures', latitude: 43.60584678224465, longitude: 1.4491879083513524, ligne: "B"},
-        {titre: 'Borderouge', latitude: 43.64095427971196, longitude: 1.4523128906995424, ligne: "B"},
-        {titre: 'Ramonville', latitude: 43.55570723649926, longitude: 1.4759403576756809, ligne: "B"},
-        {titre: 'Saint-Agnes', latitude: 43.58030864976819, longitude: 1.4497669823199246, ligne: "B"},
-        {titre: 'Saint-Michel', latitude: 43.58602517790226, longitude: 1.447168478089358,ligne: "B"},
+        {titre: 'Balma Gramont', latitude: 43.62973291200079, longitude: 1.4830699623765822,line: "A", icon: iconA},
+        {titre: 'Capitole', latitude: 43.604204437324434, longitude: 1.44501792923168, line: "A", icon: iconA},
+        {titre: 'Esquirol', latitude: 43.600302077765214, longitude: 1.4441961788911348, line: "A", icon: iconA},
+        {titre: 'Arenes', latitude: 43.59342060900095, longitude: 1.4185816325359704, line: "A", icon: iconA},
+        {titre: 'Basso Combo', latitude: 43.569995010779195, longitude: 1.392272007908091, line: "A", icon: iconA},
+        {titre: 'Borderouge', latitude: 43.64095427971196, longitude: 1.4523128906995424, line: "B", icon: iconB},
+        {titre: 'Jean Jaures', latitude: 43.60584678224465, longitude: 1.4491879083513524, line: "B", icon: iconB},
+        {titre: 'Saint-Michel', latitude: 43.58602517790226, longitude: 1.447168478089358,line: "B", icon: iconB},
+        {titre: 'Saint-Agnes', latitude: 43.58030864976819, longitude: 1.4497669823199246, line: "B", icon: iconB},
+        {titre: 'Ramonville', latitude: 43.55570723649926, longitude: 1.4759403576756809, line: "B", icon: iconB},
     ];
 
     openMap(map);
-    stationsCircles(map, stations);
+    createStationsMarkers(map, stations, iconA, iconB);
+    createLines(map, stations);
     newLocation(map);
     instantMapLocation(map);
     instantLocation(map);
-    centerMapOnClick(map);
-};
+}
 
 init();
 
@@ -63,33 +77,51 @@ function openMap(map) {
  * @param {map}
  * @param {stations}
  */
-function stationsCircles(map, stations) { stations.forEach(element => {
+function createStationsMarkers(map, stations, iconA, iconB) {
+    stations.forEach(element => {
 
+        let marker = element.line == "A" 
+            ? L.marker([element.latitude, element.longitude], {icon: iconA})
+            : L.marker([element.latitude, element.longitude], {icon: iconB});
+
+
+        marker.addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.line}.`);
     
-    let icon_sizes = [40, 40]
-
-    let iconA = L.icon({
-        iconUrl: 'broche-de-localisation(rouge).png',
-        iconSize: icon_sizes
-    })
-
-    let iconB = L.icon({
-        iconUrl: 'broche-de-localisation(jaune).png',
-        iconSize: icon_sizes
-    })
-
-    if (element.ligne == "A") {
-        var marker = L.marker([element.latitude, element.longitude], {icon: iconA}).addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.ligne}.`);
-    } else {
-        var marker = L.marker([element.latitude, element.longitude], {icon: iconB}).addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.ligne}.`);
-    };
-    
+        
         openMap(map);
 
-            // marker.addEventListener("click", () => {
-            // map.setView([marker.getLatLng().lat, marker.getLatLng().lng], 12);
+        marker.addEventListener("click", () => {
+            map.setView([marker.getLatLng().lat, marker.getLatLng().lng], 15);
+        });
+
+        marker.addEventListener("mouseover", () => {
+            marker.setIcon(new L.Icon.Default);
+        });
+
+        marker.addEventListener("mouseout", () => {
+            marker.setIcon(element.icon);
+        });
     });
 };
+
+/**
+ * Trace une ligne rouge entre les stations de la ligne A et une ligne jaune entre les stations de la ligne B
+ */
+
+function createLines(map, stations) {
+    // Stations de la ligne A
+    let lineAStations = stations.filter(station => station.line === 'A').map(station => [station.latitude, station.longitude]);
+
+    // Stations de la ligne B
+    let lineBStations = stations.filter(station => station.line === 'B').map(station => [station.latitude, station.longitude]);
+
+    // Créer la ligne rouge pour la ligne A
+    let lineAPolyline = L.polyline(lineAStations, { color: 'red' }).addTo(map);
+
+    // Créer la ligne jaune pour la ligne B
+    let lineBPolyline = L.polyline(lineBStations, { color: 'yellow' }).addTo(map);
+
+}
 
 /**
  * Ecoute quand l'utilisateur appuie sur le bouton geolocaliser
@@ -127,6 +159,7 @@ function instantMapLocation(map) {
     }; 
 
     console.log(localStorage);
+    
 };
 
 /**
@@ -153,22 +186,3 @@ function instantLocation(map) {
         });
     });
 };
-
-
-/**
- * Ecoute quand l'utilisateur appuie sur un marker de la carte puis centre la carte sur ce point
- * @param {map}
- */
-
-function centerMapOnClick(map) {
-    circle.addEventListener("click", () => {
-        map.setView([circle.getLatLng().lat, circle.getLatLng().lng], 12);
-        openMap(map);
-    })
-}
-
-
-
-
-
-
