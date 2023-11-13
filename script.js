@@ -18,7 +18,7 @@ function init() {
     } else {
         initLatitude = apFormLat;
         initLongitude = apFormLong;
-    
+    };
 
 
     let map = L.map('map').setView([initLatitude, initLongitude], 12); // Centre de la carte au démarrage
@@ -57,7 +57,7 @@ function init() {
     newLocation(map);
     instantMapLocation(map);
     instantLocation(map);
-}};
+};
 
 init();
 
@@ -87,7 +87,7 @@ function createStationsMarkers(map, stations, iconA, iconB) {
 
 
         marker.addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.line}.`);
-
+        
         marker.addEventListener("click", () => {
             map.setView([marker.getLatLng().lat, marker.getLatLng().lng], 15);
         });
