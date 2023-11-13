@@ -44,6 +44,7 @@ function init() {
         {titre: 'Arenes', latitude: 43.59342060900095, longitude: 1.4185816325359704, line: "A", icon: iconA},
         {titre: 'Basso Combo', latitude: 43.569995010779195, longitude: 1.392272007908091, line: "A", icon: iconA},
         {titre: 'Borderouge', latitude: 43.64095427971196, longitude: 1.4523128906995424, line: "B", icon: iconB},
+        {titre: 'Jeanne darc', latitude: 43.60890809203911, longitude: 1.4454711651186156, line: "B", icon: iconB},
         {titre: 'Jean Jaures', latitude: 43.60584678224465, longitude: 1.4491879083513524, line: "B", icon: iconB},
         {titre: 'Saint-Michel', latitude: 43.58602517790226, longitude: 1.447168478089358,line: "B", icon: iconB},
         {titre: 'Saint-Agnes', latitude: 43.58030864976819, longitude: 1.4497669823199246, line: "B", icon: iconB},
@@ -86,9 +87,6 @@ function createStationsMarkers(map, stations, iconA, iconB) {
 
 
         marker.addTo(map).bindPopup(`<b>Station : ${element.titre} </b><br>Métro ligne ${element.line}.`);
-    
-        
-        openMap(map);
 
         marker.addEventListener("click", () => {
             map.setView([marker.getLatLng().lat, marker.getLatLng().lng], 15);
@@ -179,8 +177,6 @@ function instantLocation(map) {
 
             localStorage.setItem("latitude", map.getCenter().lat); // Enregistrement des coordonnes dans le localStorage
     localStorage.setItem("longitude", map.getCenter().lng); // Enregistrement des coordonnes dans le localStorage
-
-        openMap(map); 
 
         let marker = L.marker([userLatitude, userLongitude]).addTo(map).bindPopup("<b>Vous êtes ici !</b><br>Emplacement actuel").openPopup(); // Affichage d'un popup
         });
