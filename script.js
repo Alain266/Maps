@@ -5,8 +5,8 @@ function init() {
 
     let storedLatitude = localStorage.getItem("latitude"); // Recherche des coordonnes dans le localStorage
     let storedLongitude = localStorage.getItem("longitude"); // Recherche des coordonnes dans le localStorage
-    let apformLat = 43.584038759746704; // Latitude ApFormation
-    let apformLong = 1.4026039000992538; // Longitude ApFormation
+    let apFormLat = 43.584038759746704; // Latitude ApFormation
+    let apFormLong = 1.4026039000992538; // Longitude ApFormation
 
 
     /**
@@ -18,7 +18,7 @@ function init() {
     } else {
         initLatitude = apFormLat;
         initLongitude = apFormLong;
-    }
+    
 
 
     let map = L.map('map').setView([initLatitude, initLongitude], 12); // Centre de la carte au démarrage
@@ -56,7 +56,7 @@ function init() {
     newLocation(map);
     instantMapLocation(map);
     instantLocation(map);
-}
+}};
 
 init();
 
